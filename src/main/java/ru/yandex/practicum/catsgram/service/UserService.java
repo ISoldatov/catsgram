@@ -9,10 +9,7 @@ import ru.yandex.practicum.catsgram.model.User;
 import ru.yandex.practicum.catsgram.util.exception.InvalidEmailException;
 import ru.yandex.practicum.catsgram.util.exception.UserAlreadyExistException;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -46,6 +43,10 @@ public class UserService {
         users.remove(user);
         users.add(user);
         return user;
+    }
+
+    public Optional<User> findUserByEmail(String author) {
+        return users.stream().filter(u -> u.getEmail().equals(author)).findFirst();
     }
 
 }
