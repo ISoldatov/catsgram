@@ -8,11 +8,9 @@ import ru.yandex.practicum.catsgram.model.User;
 import ru.yandex.practicum.catsgram.service.UserService;
 import ru.yandex.practicum.catsgram.util.exception.InvalidEmailException;
 import ru.yandex.practicum.catsgram.util.exception.UserAlreadyExistException;
+import ru.yandex.practicum.catsgram.util.exception.UserNotFoundException;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping("/users")
@@ -26,15 +24,25 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping
-    public List<User> getAll() {
-        return userService.getAll();
+    @GetMapping(value = "/users/{email}")
+    public Optional<User> findByEmail(String email) {
+        Optional<User> user = userService.findUserByEmail(email);
+        if (user.isEmpty()) {
+            throw new UserNotFoundException("User с email " + email + " не найден");
+        } else {
+            return user;
+        }
     }
 
     @PostMapping
     public User create(@RequestBody User user) {
         log.debug("Добавлен user: {}", user);
         return userService.create(user);
+    }
+
+    @GetMapping
+    public List<User> getAll() {
+        return userService.getAll();
     }
 
     @PutMapping
